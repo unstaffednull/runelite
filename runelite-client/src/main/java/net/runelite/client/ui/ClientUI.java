@@ -25,13 +25,17 @@
 package net.runelite.client.ui;
 
 import com.google.common.base.Strings;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSpinner;
 import java.applet.Applet;
+import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -50,6 +54,18 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -106,6 +122,7 @@ import org.pushingpixels.substance.internal.utils.SubstanceTitlePaneUtilities;
 @Singleton
 public class ClientUI
 {
+	public static final BufferedImage ICON = ImageUtil.getResourceStreamFromClass(ClientUI.class, "/runeliteplus.png");
 	private static final String CONFIG_GROUP = "runelite";
 	private static final String PLUS_CONFIG_GROUP = "runeliteplus";
 	private static final String CONFIG_CLIENT_BOUNDS = "clientBounds";
@@ -115,11 +132,9 @@ public class ClientUI
 	private static final int CLIENT_WELL_HIDDEN_MARGIN = 160;
 	private static final int CLIENT_WELL_HIDDEN_MARGIN_TOP = 10;
 	public static boolean allowInput = false;
-	public static final BufferedImage ICON = ImageUtil.getResourceStreamFromClass(ClientUI.class, "/runeliteplus.png");
-
-	@Getter
-	private TrayIcon trayIcon;
-
+	public static ContainableFrame frame;
+	public static PluginPanel pluginPanel;
+	public static ClientPluginToolbar pluginToolbar;
 	private final RuneLiteConfig config;
 	private final KeyManager keyManager;
 	private final MouseManager mouseManager;
@@ -128,17 +143,17 @@ public class ClientUI
 	private final Provider<ClientThread> clientThreadProvider;
 	private final CardLayout cardLayout = new CardLayout();
 	private final Rectangle sidebarButtonPosition = new Rectangle();
+	@Getter
+	private TrayIcon trayIcon;
 	private boolean withTitleBar;
 	private BufferedImage sidebarOpenIcon;
 	private BufferedImage sidebarClosedIcon;
-	public static ContainableFrame frame;
 	private JPanel navContainer;
-	public static PluginPanel pluginPanel;
-	public static ClientPluginToolbar pluginToolbar;
 	private ClientTitleToolbar titleToolbar;
 	private JButton currentButton;
 	private NavigationButton currentNavButton;
 	private boolean sidebarOpen;
+	private JFXPanel topBar;
 	private JPanel container;
 	private NavigationButton sidebarNavigationButton;
 	private JButton sidebarNavigationJButton;
@@ -312,6 +327,7 @@ public class ClientUI
 
 	/**
 	 * Initialize UI.
+	 *
 	 * @param runelite runelite instance that will be shut down on exit
 	 * @throws Exception exception that can occur during creation of the UI
 	 */
@@ -358,7 +374,60 @@ public class ClientUI
 
 			pluginToolbar = new ClientPluginToolbar();
 			titleToolbar = new ClientTitleToolbar();
-			frame.add(container);
+
+			//JFXPanel needs to be created on Swing Thread (We already are)
+			JFXPanel sideBar = new JFXPanel();
+
+			sideBar.setSize(35, 1080);
+			sideBar.setVisible(true);
+			topBar = new JFXPanel();
+			topBar.setSize(800, 25);
+			topBar.setVisible(true);
+			JFXSpinner jfxSpinner = new JFXSpinner();
+
+			//JavaFX stuff still called on JavaFX Thread
+			Platform.runLater(() -> {
+				BorderPane topBorder = new BorderPane();
+				BorderPane sideBorder = new BorderPane();
+				topBorder.setBackground(new Background(new BackgroundFill(Paint.valueOf(RuneLiteColorScheme.primaryColorDark), new CornerRadii(0), new Insets(0))));
+				sideBorder.setBackground(new Background(new BackgroundFill(Paint.valueOf(RuneLiteColorScheme.primaryColorDark), new CornerRadii(0), new Insets(0))));
+
+				//Horizontal Box for top bar
+				HBox hbox = new HBox();
+				hbox.setPadding(new Insets(0));
+				hbox.setSpacing(8);
+
+				hbox.getChildren().add(jfxSpinner);
+				Text wip = new Text();
+				wip.setText("Work in Progress");
+				wip.setFill(Paint.valueOf(RuneLiteColorScheme.secondaryColor));
+				hbox.getChildren().add(wip);
+
+				topBorder.setLeft(hbox);
+
+				//Vertical Box for side bar
+				VBox vbox = new VBox();
+				vbox.setPadding(new Insets(0));
+				vbox.setSpacing(8);
+
+				JFXButton plugins = new JFXButton();
+				JFXButton devTools = new JFXButton();
+				vbox.getChildren().add(plugins);
+				vbox.getChildren().add(devTools);
+				plugins.setBackground(new Background(new BackgroundFill(Paint.valueOf(RuneLiteColorScheme.secondaryColorDark), new CornerRadii(0), new Insets(0))));
+				devTools.setBackground(new Background(new BackgroundFill(Paint.valueOf(RuneLiteColorScheme.secondaryColorDark), new CornerRadii(0), new Insets(0))));
+
+				sideBorder.setTop(vbox);
+
+				Scene topScene = new Scene(topBorder, 800, 25);
+				Scene sideScene = new Scene(sideBorder, 35, 1080);
+				topBar.setScene(topScene);
+				sideBar.setScene(sideScene);
+
+				frame.add(topBar, BorderLayout.NORTH);
+				frame.add(container, BorderLayout.CENTER);
+				frame.add(sideBar, BorderLayout.EAST);
+			});
 
 			// Add key listener
 			final HotkeyListener sidebarListener = new HotkeyListener(() ->
@@ -392,7 +461,7 @@ public class ClientUI
 			mouseManager.registerMouseListener(mouseListener);
 
 			// Decorate window with custom chrome and titlebar if needed
-			withTitleBar = config.enableCustomChrome();
+			withTitleBar = false;
 			frame.setUndecorated(withTitleBar);
 
 			if (withTitleBar)

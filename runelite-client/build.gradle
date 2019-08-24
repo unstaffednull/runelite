@@ -41,6 +41,7 @@ dependencies {
     implementation group: 'org.ow2.asm', name: 'asm-tree', version: asm
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4j
     implementation group: 'org.xeustechnologies', name: 'jcl-core', version: jclCore
+    implementation group:  'com.jfoenix', name: 'jfoenix', version: jfoenix
     implementation project(':http-api')
     implementation project(':runelite-api')
     implementation(group: 'io.sigpipe', name: 'jbsdiff', version: jbsdiff) {

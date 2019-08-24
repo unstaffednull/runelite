@@ -47,6 +47,7 @@ ext {
     jbsdiff = '1.0'
     jclCore = '2.8'
     jedis = '3.1.0'
+    jfoenix = '8.0.8'
     jna = '5.4.0'
     jogamp = '2.3.2'
     jopt = '5.0.4'
