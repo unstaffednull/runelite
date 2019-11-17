@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2018, Kamiel
  * Copyright (c) 2019, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
@@ -23,58 +22,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.raids;
+package net.runelite.api.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
+import net.runelite.api.Skill;
 
-@AllArgsConstructor
-@Getter
-enum RoomType
+@Value
+public class FakeXpDrop implements Event
 {
-	START("Start", '#'),
-	END("End", '¤'),
-	SCAVENGERS("Scavengers", 'S'),
-	FARMING("Farming", 'F'),
-	EMPTY("Empty", ' '),
-	COMBAT("Combat", 'C'),
-	PUZZLE("Puzzle", 'P');
-
-	private final String name;
-	private final char code;
-
-	RaidRoom getUnsolvedRoom()
-	{
-		switch (this)
-		{
-			case START:
-				return RaidRoom.START;
-			case END:
-				return RaidRoom.END;
-			case SCAVENGERS:
-				return RaidRoom.SCAVENGERS;
-			case FARMING:
-				return RaidRoom.FARMING;
-			case COMBAT:
-				return RaidRoom.UNKNOWN_COMBAT;
-			case PUZZLE:
-				return RaidRoom.UNKNOWN_PUZZLE;
-			case EMPTY:
-			default:
-				return RaidRoom.EMPTY;
-		}
-	}
-
-	static RoomType fromCode(char code)
-	{
-		for (RoomType type : values())
-		{
-			if (type.getCode() == code)
-			{
-				return type;
-			}
-		}
-
-		return EMPTY;
-	}
+	private final Skill skill;
+	private final int xp;
 }
