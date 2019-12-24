@@ -1,16 +1,15 @@
 /*
- * Copyright (c) 2018, Davis Cook <daviscook447@gmail.com>
- * Copyright (c) 2018, Daddy Dozer <Whitedylan7@gmail.com>
+ * Copyright (c) 2019, Davis Cook <https://github.com/daviscook477>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *	list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
- *	this list of conditions and the following disclaimer in the documentation
- *	and/or other materials provided with the distribution.
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -23,14 +22,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.suppliestracker;
+package net.runelite.api.events;
+
+import javax.annotation.Nullable;
+import lombok.Value;
+import net.runelite.api.GameObject;
+import net.runelite.api.coords.WorldPoint;
 
 /**
- * Type of action performed in a menu
+ * an event posted when a cannonball is fired
  */
-public enum ActionType
+@Value
+public class CannonPlaced implements Event
 {
-	CONSUMABLE,
-	TELEPORT,
-	CAST
+	/**
+	 * Cannon placed or picked up.
+	 */
+	private final boolean placed;
+
+	/**
+	 * The location of the cannon.
+	 */
+	@Nullable
+	private final WorldPoint cannonLocation;
+
+	/**
+	 * The cannon object.
+	 */
+	@Nullable
+	private final GameObject cannon;
 }

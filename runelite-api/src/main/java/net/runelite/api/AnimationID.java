@@ -350,4 +350,14 @@ public final class AnimationID
 	public static final int ZALCANO_KNOCKED_DOWN = 8437;
 	public static final int ZALCANO_WAKEUP = 8439;
 	public static final int ZALCANO_ROCK_GLOWING = 8448;
+
+	//Supplies Tracker
+	public static final int ONEHAND_SLASH_SWORD_ANIMATION = 390;
+	public static final int ONEHAND_STAB_SWORD_ANIMATION = 386;
+	public static final int SCYTHE_OF_VITUR_ANIMATION = 8056;
+	public static final int LOW_LEVEL_STANDARD_SPELLS = 711;
+	public static final int WAVE_SPELL_ANIMATION = 727;
+	public static final int SURGE_SPELL_ANIMATION = 7855;
+	public static final int HIGH_ALCH_ANIMATION = 713;
+	public static final int LUNAR_HUMIDIFY = 6294;
 }
