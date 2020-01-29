@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, https://openosrs.com
+ * Copyright (c) 2019, Trevor <https://github.com/Trevor159>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,46 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.hydra;
+package net.runelite.api.annotations;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-@ConfigGroup("hydra")
-public interface BabyHydraConfig extends Config
+/**
+ * Used to indicate a method is only visible for external plugins
+ */
+@Documented
+@Retention(RetentionPolicy.SOURCE)
+public @interface VisibleForExternalPlugins
 {
-
-	@ConfigItem(
-		position = 1,
-		keyName = "textindicators",
-		name = "Text Indicator",
-		description = "Configures if text indicator is shown above hydra's or not."
-	)
-	default boolean TextIndicator()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		position = 2,
-		keyName = "countersize",
-		name = "Bold indicator",
-		description = "Configures if text indicator is bold or not."
-	)
-	default boolean BoldText()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		position = 3,
-		keyName = "prayerhelper",
-		name = "Prayer Helper",
-		description = "Configures if prayer helper is shown or not."
-	)
-	default boolean PrayerHelper()
-	{
-		return true;
-	}
 }
