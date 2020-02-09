@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, pklite <https://github.com/pklite/pklite>
+ * Copyright (c) 2019, Jordan Atwood <nightfirecat@protonmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,6 +10,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -21,23 +22,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.freezetimers;
+package net.runelite.client.plugins.cluescrolls.clues.hotcold;
 
-import lombok.AccessLevel;
-import lombok.Getter;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
-public enum TimerType
+public class HotColdTemperatureChangeTest
 {
-	FREEZE(3000),
-	VENG(0),
-	TELEBLOCK(45000),
-	THIS_SHIT_BROKE(-1);
+	private static final String[] VALID_MESSAGES = {
+		"The device is warm, and warmer than last time.",
+		"The device is cold, but colder than last time.",
+		"The device is very hot, and the same temperature as last time.",
+	};
+	private static final String[] INVALID_MESSAGES = {
+		"The device is cold.",
+		"The device is ice cold.",
+		"The device is very cold.",
+		"The device is hot.",
+		"The device is incredibly hot.",
+		"The device is an octopus, and is wetter than last time",
+		"foobar",
+		"a q p w",
+		"My feet are cold, I should put them in some lukewarm water, or run hot water over them.",
+		"and warmer than and colder than and the same temperature",
+	};
 
-	@Getter(AccessLevel.PACKAGE)
-	private final int immunityTime;
-
-	TimerType(int immunityTime)
+	@Test
+	public void testValidTemperatureChangeMessages()
 	{
-		this.immunityTime = immunityTime;
+		for (final String message : VALID_MESSAGES)
+		{
+			assertNotNull(message, HotColdTemperatureChange.of(message));
+		}
+	}
+
+	@Test
+	public void testInvalidTemperatureChangeMessages()
+	{
+		for (final String message : INVALID_MESSAGES)
+		{
+			assertNull(message, HotColdTemperatureChange.of(message));
+		}
 	}
 }
